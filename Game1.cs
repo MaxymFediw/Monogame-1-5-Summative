@@ -1,13 +1,34 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Monogame_1_5_Summative
 {
+
+    enum Screen 
+    {
+        Intro, 
+        Start,
+        Travel,
+        Outro
+    }
+
+
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+
+        MouseState mouseState;
+
+        Screen screen;
+
+        Texture2D delorianTexture, introTexture, mallTexture, hillValleyTexture, outroTexture;
+
+        Rectangle delorianRect, window;
+
 
         public Game1()
         {
@@ -20,13 +41,22 @@ namespace Monogame_1_5_Summative
         {
             // TODO: Add your initialization logic here
 
+            window = new Rectangle(0, 0, 800, 600);
+
+            _graphics.PreferredBackBufferWidth = window.Width;
+            _graphics.PreferredBackBufferHeight = window.Height;
+            _graphics.ApplyChanges();
+
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
+            _spriteBatch.Begin();
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            introTexture = Content.Load<Texture2D>("");
+            
             // TODO: use this.Content to load your game content here
         }
 
