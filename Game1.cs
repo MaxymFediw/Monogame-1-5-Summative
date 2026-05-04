@@ -21,13 +21,17 @@ namespace Monogame_1_5_Summative
         private SpriteBatch _spriteBatch;
 
 
-        MouseState mouseState;
+        MouseState mouseState, prevMouseState;
 
         Screen screen;
 
-        Texture2D delorianTexture, introTexture, mallTexture, hillValleyTexture, outroTexture;
+        Texture2D delorianTexture, introTexture, mallTexture, hillValleyTexture, outroTexture, travelTexture;
 
         Rectangle delorianRect, window;
+
+        SoundEffect introOutroSound, gameSound;
+
+        SoundEffectInstance introOutroInstance, gameSoundInstance;
 
 
         public Game1()
@@ -52,16 +56,38 @@ namespace Monogame_1_5_Summative
 
         protected override void LoadContent()
         {
-            _spriteBatch.Begin();
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            introTexture = Content.Load<Texture2D>("");
+            delorianTexture = Content.Load<Texture2D>("delorian");
+
+            mallTexture = Content.Load<Texture2D>("parkingLot");
+
+            hillValleyTexture = Content.Load<Texture2D>("hillValley");
+
+            outroTexture = Content.Load<Texture2D>("outro");
+
+            travelTexture = Content.Load<Texture2D>("galaxy");
+
+            introTexture = Content.Load<Texture2D>("intro");
+
+            introOutroSound = Content.Load<SoundEffect>("mainTheme");
+
+            gameSound = Content.Load<SoundEffect>("bttfJingle");
+
+            introOutroInstance = introOutroSound.CreateInstance();
+
+            gameSoundInstance = gameSound.CreateInstance();
             
             // TODO: use this.Content to load your game content here
         }
 
         protected override void Update(GameTime gameTime)
         {
+            prevMouseState = mouseState;
+
+            mouseState = Mouse.GetState();
+            
+            
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
