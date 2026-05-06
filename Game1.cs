@@ -12,7 +12,8 @@ namespace Monogame_1_5_Summative
         Intro, 
         Start,
         Travel, //make the background look like its moving somehow.
-        Outro
+        Outro,
+        Done
     }
 
 
@@ -27,13 +28,13 @@ namespace Monogame_1_5_Summative
 
         Screen screen;
 
-        Texture2D delorianTexture, sideDelorianTexture, introTexture, mallTexture, hillValleyTexture, outroTexture, travelTexture;
+        Texture2D delorianTexture, sideDelorianTexture, delorianWingsTexture, introTexture, martyTexture, mallTexture, hillValleyTexture, outroTexture, travelTexture;
 
-        Rectangle delorianRect, sideDelorianRect, window;
+        Rectangle delorianRect, sideDelorianRect, delorianWingRect, martyRect, window;
 
-        SoundEffect introOutroSound, gameSound;
+        SoundEffect introOutroSound, gameSound, jbGoode;
 
-        SoundEffectInstance introOutroInstance, gameSoundInstance;
+        SoundEffectInstance introOutroInstance, gameSoundInstance, jbGoodeInstance;
 
         SpriteFont textFont;
 
@@ -57,9 +58,13 @@ namespace Monogame_1_5_Summative
             _graphics.PreferredBackBufferHeight = window.Height;
             _graphics.ApplyChanges();
 
-            delorianRect = new Rectangle(246, 217, 430, 380);  //30, 60
+            delorianRect = new Rectangle(246, 217, 430, 380);  
+                                                    //width, height
+            sideDelorianRect = new Rectangle(246, 220, 500, 201);
 
-            sideDelorianRect = new Rectangle(246, 220, 300, 201);
+            delorianWingRect = new Rectangle(100, 350, 200, 157);
+
+            martyRect = new Rectangle(100, 375, 100, 124);
 
             base.Initialize();
         }
@@ -91,6 +96,14 @@ namespace Monogame_1_5_Summative
             introOutroInstance = introOutroSound.CreateInstance();
 
             gameSoundInstance = gameSound.CreateInstance();
+
+            jbGoode = Content.Load<SoundEffect>("johnnyBGoode");
+
+            jbGoodeInstance = jbGoode.CreateInstance();
+
+            delorianWingsTexture = Content.Load<Texture2D>("delorianWings");
+
+            martyTexture = Content.Load<Texture2D>("martyMcFly");
             
             // TODO: use this.Content to load your game content here
         }
@@ -108,7 +121,7 @@ namespace Monogame_1_5_Summative
 
             // TODO: Add your update logic here
 
-            if (screen == Screen.Intro) 
+            if (screen == Screen.Intro)
             {
                 if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
                 {
@@ -124,7 +137,7 @@ namespace Monogame_1_5_Summative
                 }
             }
 
-            else if (screen == Screen.Travel) 
+            else if (screen == Screen.Travel)
             {
                 if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
                 {
@@ -132,7 +145,15 @@ namespace Monogame_1_5_Summative
                 }
             }
 
-            base.Update(gameTime);
+            else if (screen == Screen.Outro) 
+            {
+                if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released) 
+                {
+                    screen = Screen.Done;
+                }
+            }
+
+                base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -169,13 +190,26 @@ namespace Monogame_1_5_Summative
                 gameSoundInstance.Stop();
 
                 _spriteBatch.Draw(travelTexture, window, Color.White);
-                _spriteBatch.DrawString(textFont, ("Click To End in 1955"), new Vector2 (20, 20), Color.Red);
+                _spriteBatch.DrawString(textFont, ("Click To Go To 1955"), new Vector2 (20, 20), Color.Red);
 
                 _spriteBatch.Draw(sideDelorianTexture, sideDelorianRect, Color.White);
 
-                //get Huey Lewis and the News Here maybe idk
+                introOutroInstance.Play();
             }
 
+            if (screen == Screen.Outro) 
+            {
+
+                introOutroInstance.Stop();
+
+                _spriteBatch.Draw(hillValleyTexture, window, Color.White);
+                _spriteBatch.DrawString(textFont, ("Oh my God, Doc-Im in 1955! \n\n Click To End"), new Vector2(20, 20), Color.Red);
+
+                _spriteBatch.Draw(delorianWingsTexture, delorianWingRect, Color.White);
+                _spriteBatch.Draw(martyTexture, martyRect, Color.White);
+
+                jbGoodeInstance.Play();
+            }
 
 
             _spriteBatch.End();
