@@ -30,13 +30,17 @@ namespace Monogame_1_5_Summative
 
         Texture2D delorianTexture, sideDelorianTexture, delorianWingsTexture, introTexture, martyTexture, mallTexture, hillValleyTexture, outroTexture, travelTexture;
 
-        Rectangle delorianRect, sideDelorianRect, delorianWingRect, martyRect, window;
+        Rectangle delorianRect, travelRect2, sideDelorianRect, delorianWingRect, martyRect, window, travelRect;
 
         SoundEffect introOutroSound, gameSound, jbGoode;
 
         SoundEffectInstance introOutroInstance, gameSoundInstance, jbGoodeInstance;
 
         SpriteFont textFont;
+        
+        int timer;
+        
+        Vector2 travelSpeed;
 
 
         public Game1()
@@ -52,7 +56,7 @@ namespace Monogame_1_5_Summative
         {
             // TODO: Add your initialization logic here
 
-            window = new Rectangle(0, 0, 800, 600);
+            window = new Rectangle(0, 0, 800, 600); 
 
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -60,11 +64,19 @@ namespace Monogame_1_5_Summative
 
             delorianRect = new Rectangle(246, 217, 430, 380);  
                                                     //width, height
-            sideDelorianRect = new Rectangle(246, 220, 500, 201);
+            sideDelorianRect = new Rectangle(-250, 220, 500, 201);
 
-            delorianWingRect = new Rectangle(100, 350, 200, 157);
+            delorianWingRect = new Rectangle(100, 450, 200, 157);
 
-            martyRect = new Rectangle(100, 375, 100, 124);
+            martyRect = new Rectangle(243, 486, 100, 150);
+
+            travelRect = new Rectangle(0, 0, 1600, 600);
+
+            travelSpeed = new Vector2(6, 0);
+
+            travelRect2 = new Rectangle(1600, 0, 1600, 600);
+
+            
 
             base.Initialize();
         }
@@ -104,6 +116,8 @@ namespace Monogame_1_5_Summative
             delorianWingsTexture = Content.Load<Texture2D>("delorianWings");
 
             martyTexture = Content.Load<Texture2D>("martyMcFly");
+
+            
             
             // TODO: use this.Content to load your game content here
         }
@@ -139,9 +153,20 @@ namespace Monogame_1_5_Summative
 
             else if (screen == Screen.Travel)
             {
-                if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
+                timer += 1;
+                travelRect.X -= 10;
+                sideDelorianRect.X += 1;
+                travelRect2.X -= 10;
+                //travelSpeed.X *= 1;
+
+                //travelRect.X -= (int)travelSpeed.X;
+
+                //travelRect2.X -= (int)travelSpeed.X;
+
+                if (timer >= 600)
                 {
                     screen = Screen.Outro;
+                    sideDelorianRect.X =-250;
                 }
             }
 
@@ -149,9 +174,17 @@ namespace Monogame_1_5_Summative
             {
                 if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released) 
                 {
+                   
+
                     screen = Screen.Done;
                 }
             }
+            else if (screen == Screen.Done)
+            {
+                sideDelorianRect.X += 4;
+            }
+
+
 
                 base.Update(gameTime);
         }
@@ -187,13 +220,29 @@ namespace Monogame_1_5_Summative
 
             if (screen == Screen.Travel)
             {
+                
                 gameSoundInstance.Stop();
+                
+                _spriteBatch.Draw(travelTexture, travelRect, Color.White);
+              
+                if (travelRect.X == -1600) 
+                {
+                    travelRect.X = travelRect2.Right;
+                }
 
-                _spriteBatch.Draw(travelTexture, window, Color.White);
-                _spriteBatch.DrawString(textFont, ("Click To Go To 1955"), new Vector2 (20, 20), Color.Red);
+                if (travelRect2.X == -1600)
+                {
+                    travelRect2.X = travelRect.Right;
+                }
+
+                    _spriteBatch.Draw(travelTexture, travelRect, Color.White);
+                _spriteBatch.Draw(travelTexture, travelRect2, Color.White);
+                
 
                 _spriteBatch.Draw(sideDelorianTexture, sideDelorianRect, Color.White);
-
+                
+                _spriteBatch.DrawString(textFont, ("Doc-Im goin Back In Time!"), new Vector2(20, 20), Color.Red);
+                
                 introOutroInstance.Play();
             }
 
@@ -203,7 +252,7 @@ namespace Monogame_1_5_Summative
                 introOutroInstance.Stop();
 
                 _spriteBatch.Draw(hillValleyTexture, window, Color.White);
-                _spriteBatch.DrawString(textFont, ("Oh my God, Doc-Im in 1955! \n\n Click To End"), new Vector2(20, 20), Color.Red);
+                _spriteBatch.DrawString(textFont, ("Oh my God, Doc-Im in 1955! \n\n Click To Go Back Home"), new Vector2(20, 20), Color.Red);
 
                 _spriteBatch.Draw(delorianWingsTexture, delorianWingRect, Color.White);
                 _spriteBatch.Draw(martyTexture, martyRect, Color.White);
@@ -211,6 +260,17 @@ namespace Monogame_1_5_Summative
                 jbGoodeInstance.Play();
             }
 
+            if (screen == Screen.Done) 
+            {
+                jbGoodeInstance.Stop();
+
+                _spriteBatch.Draw(mallTexture, window, Color.White);
+                _spriteBatch.Draw(sideDelorianTexture, sideDelorianRect, Color.White);
+
+                _spriteBatch.DrawString(textFont, ("The End"), new Vector2(20, 20), Color.Red);
+
+                introOutroInstance.Play();
+            }
 
             _spriteBatch.End();
            
