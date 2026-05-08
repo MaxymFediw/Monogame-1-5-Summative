@@ -13,6 +13,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Back In Time.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Back In Time.mp3
+
 #begin BTTF.ttf
 /copy:BTTF.ttf
 

@@ -32,13 +32,13 @@ namespace Monogame_1_5_Summative
 
         Rectangle delorianRect, travelRect2, sideDelorianRect, delorianWingRect, martyRect, window, travelRect;
 
-        SoundEffect introOutroSound, gameSound, jbGoode;
+        SoundEffect introOutroSound, gameSound, jbGoode, backInTime;
 
-        SoundEffectInstance introOutroInstance, gameSoundInstance, jbGoodeInstance;
+        SoundEffectInstance introOutroInstance, backInTimeInstance, gameSoundInstance, jbGoodeInstance;
 
         SpriteFont textFont;
         
-        int timer;
+        int timer, stop;
         
         Vector2 travelSpeed;
 
@@ -117,6 +117,10 @@ namespace Monogame_1_5_Summative
 
             martyTexture = Content.Load<Texture2D>("martyMcFly");
 
+            backInTime = Content.Load<SoundEffect>("Back In Time");
+
+            backInTimeInstance = backInTime.CreateInstance();
+
             
             
             // TODO: use this.Content to load your game content here
@@ -181,7 +185,12 @@ namespace Monogame_1_5_Summative
             }
             else if (screen == Screen.Done)
             {
-                sideDelorianRect.X += 4;
+                sideDelorianRect.X += 1;
+                stop += 1;
+                //if (stop >= 600)
+                //{ 
+                //    Exit();
+                //}
             }
 
 
@@ -241,7 +250,7 @@ namespace Monogame_1_5_Summative
 
                 _spriteBatch.Draw(sideDelorianTexture, sideDelorianRect, Color.White);
                 
-                _spriteBatch.DrawString(textFont, ("Doc-Im goin Back In Time!"), new Vector2(20, 20), Color.Red);
+                _spriteBatch.DrawString(textFont, (""), new Vector2(20, 20), Color.Red);
                 
                 introOutroInstance.Play();
             }
@@ -269,7 +278,7 @@ namespace Monogame_1_5_Summative
 
                 _spriteBatch.DrawString(textFont, ("The End"), new Vector2(20, 20), Color.Red);
 
-                introOutroInstance.Play();
+                backInTimeInstance.Play();
             }
 
             _spriteBatch.End();
